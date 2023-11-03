@@ -2,5 +2,11 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/api/totalUser": "pages/api/totalUser.js"
+  "/": "pages/index.js",
+  "/api/login": "pages/api/login.js",
+  "/dashboard": "pages/dashboard.js",
+  "/total": "pages/total.js",
+  "/api/totalUser": "pages/api/totalUser.js",
+  "/myRefferals": "pages/myRefferals.js",
+  "/api/myrefferals": "pages/api/myrefferals.js"
 }

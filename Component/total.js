@@ -152,7 +152,7 @@ const MyRefferal = () => {
                 >
                   <img src={Arrow.src} onClick={() => router.back()} />
                 </span>
-                Card Pack
+                Withdraw Request
               </h3>
 
               <table className="table funds-table mt-3" id="funds-color">
@@ -194,11 +194,12 @@ const MyRefferal = () => {
                         <td>{referral.email}</td>
                         <td>{referral.paymentMethod}</td>
                         <td>{referral.totalAmount}</td>
+                        <td> {referral.transactionId } </td>
                         <td>  {referral.active === 0  ? "Pending" : referral.active === 1 ? "Success" : referral.active === 2
     ? "Reject"
     : "Unknown Status"}
 </td>
-                        <td> {referral.transactionId } </td>
+                        
                         <td> <Button
   color="primary"
   type="button"
