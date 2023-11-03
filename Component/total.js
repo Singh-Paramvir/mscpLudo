@@ -7,6 +7,7 @@ import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { useRef } from "react";
 // Add state variable to store the selected userId
 let moon;
+let sun;
 let start_time;
 let entry_fee;
 let firstprize;
@@ -45,32 +46,44 @@ const MyRefferal = () => {
       console.log(err, "api error here")
     }
   }
+  async function apiFunction1(e) {
+    try {
+      console.log("hit function",e);
+      setModalOpen(!modalOpen)
+      sun = e
+      console.log(sun, "userId!!!!");
+      let active = 2;
+      const data  = {
+        id:sun,
+        active
+      }
+      console.log(data,"rejevt data");
+      let res = await axios.post("/api/profile",data );
+      const response = res.data;
+      setModalOpen(false);
+      console.log("model closed");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
+    } catch (err) {
+      console.log(err, "api error here")
+    }
+  }
   // handle modle onclick
   const handleAddChips = async (e) => {
     try {
-      start_time = firstRef.current.value;
-      entry_fee = firstRef1.current.value;
-      firstprize = firstRef2.current.value;
-      // players = firstRef3.current.value;
-   
+      let active = 1;
       const data = {
         id:moon,
-        start_time,entry_fee,firstprize,
+        active
       };
       console.log(data, "moon hererererererere ");
-      // const token = localStorage.getItem("token");
-      // console.log(token, "fhfhjfh");
-
-      // api call
-      let res = await axios.post("/api/totalUser",data );
+      const token = localStorage.getItem("token");
+      let res = await axios.post("/api/profile",data );
       const response = res.data;
-      console.log(response, "response data");
-
-      // Close the modal
       setModalOpen(false);
       console.log("model closed");
-
-      // Refresh the page after showing the toast message
       setTimeout(() => {
         window.location.reload();
       }, 1000);
@@ -86,9 +99,10 @@ const MyRefferal = () => {
   return (
 
     <div>
+      
       <Modal toggle={() => setModalOpen(!modalOpen)} isOpen={modalOpen}>
         <div className="modal-header d-flex justify-content-between align-items-center m-0">
-          <h5 className="modal-title">Change Pack Detail </h5>
+          <h5 className="modal-title">Approve </h5>
           <button
             aria-label="Close"
             className="close"
@@ -99,41 +113,7 @@ const MyRefferal = () => {
           </button>
         </div>
         <ModalBody>
-          <input
-            className="textinput mt-3"
-            type="number"
-            name="quantity"
-            placeholder="Start time"
-            required
-            ref={firstRef}
-          />
-          <br></br>
-          <input
-            className="textinput mt-3"
-            type="number"
-            name="quantity"
-            placeholder="Entry fee"
-            required
-            ref={firstRef1}
-          />
-           <br></br>
-          <input
-            className="textinput mt-3"
-            type="number"
-            name="quantity"
-            placeholder="Win amount"
-            required
-            ref={firstRef2}
-          />
-          <br></br>
-          {/* <input
-            className="textinput mt-3"
-            type="number"
-            name="quantity"
-            placeholder="Players"
-            required
-            ref={firstRef3}
-          /> */}
+         
 
         </ModalBody>
         <ModalFooter>
@@ -154,6 +134,8 @@ const MyRefferal = () => {
         </ModalFooter>
       </Modal>
 
+      {/* reject */}
+      
       <section className="profile-sec">
         <div className="container">
           <div className="row justify-content-center">
@@ -191,9 +173,15 @@ const MyRefferal = () => {
                     <th id="fuds" scope="col">
                     TransactionId
                     </th>
-                    {/* <th id="fuds" scope="col">
-                      Update
-                    </th> */}
+                    <th id="fuds" scope="col">
+                    Status
+                    </th>
+                    <th id="fuds" scope="col">
+                      Approve
+                    </th>
+                    <th id="fuds" scope="col">
+                      Reject
+                    </th>
 
                   </tr>
                 </thead>
@@ -203,19 +191,33 @@ const MyRefferal = () => {
                     referrals.map((referral, index) => (
                       <tr key={referral.id}>
                         <td>{index + 1}</td>
-                        <td>{referral.email} Sec</td>
+                        <td>{referral.email}</td>
                         <td>{referral.paymentMethod}</td>
                         <td>{referral.totalAmount}</td>
+                        <td>  {referral.active === 0  ? "Pending" : referral.active === 1 ? "Success" : referral.active === 2
+    ? "Reject"
+    : "Unknown Status"}
+</td>
                         <td> {referral.transactionId } </td>
-                        {/* <td> <Button color="primary" type="button"
-                          onClick={() => apiFunction(referral.id)}>
-                          Update Pack
-                        </Button></td> */}
+                        <td> <Button
+  color="primary"
+  type="button"
+  onClick={() => apiFunction(referral.id)}
+  disabled={referral.active === 1 ||referral.active === 2}
+>
+  Approve
+</Button></td>
+                        <td> <Button color="danger" type="button"
+                          onClick={() => apiFunction1(referral.id)}
+                          disabled={referral.active === 2 ||referral.active === 1 }>
+                           
+                          Reject
+                        </Button></td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="4">No referrals found</td>
+                      <td colSpan="4">No data found</td>
                     </tr>
                   )}
                 </tbody>
