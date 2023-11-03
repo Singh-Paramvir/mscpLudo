@@ -15,11 +15,6 @@
     "static/development/_middlewareManifest.js"
   ],
   "pages": {
-    "/": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/index.js"
-    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
@@ -35,15 +30,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/dashboard.js"
     ],
-    "/myRefferals": [
+    "/total": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/myRefferals.js"
-    ],
-    "/updateProfile": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/updateProfile.js"
+      "static/chunks/pages/total.js"
     ]
   },
   "ampFirstPages": []

@@ -69,11 +69,11 @@ const LinkPage = () => {
                       
                       </div>
                   
-                    {/* <Link href={"/total"}>
+                    <Link href={"/total"}>
                       <div className="link-item five-sec" id="sec-item">
-                        SORT USER
+                        WITHDRAW
                       </div>
-                    </Link> */}
+                    </Link>
                     {/* <Link href={"/fa"}>
                       <div className="link-item six-sec" id="seconds-item">
                         CHIPS PRICE

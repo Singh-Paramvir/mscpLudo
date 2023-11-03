@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev1": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "devii": "node server.js"
+    "dev": "node server.js"
   },
   "dependencies": {
     "@emotion/react": "^11.10.0",

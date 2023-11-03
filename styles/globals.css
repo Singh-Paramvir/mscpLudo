@@ -1782,6 +1782,10 @@ sup {
     margin-left: 20px !important;
     margin-top: 0px !important;
 }
+#secc-item {
+    margin-left: 20px !important;
+    margin-top: 0px !important;
+}
 
 #thirds-item {
     margin-left: 20px !important;
@@ -1889,7 +1893,7 @@ sup {
     justify-content: center;
     height: 40.59px;
     width: 40.59px;
-    background-image: url(\/buy-icon.png);
+    background-image: url(\/wit.png);
     position: absolute;
     top: 25%;
     float: left;

@@ -1,171 +1,233 @@
-import axios from "axios";
-import React, { useRef, useState, useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import axios from "axios";
+import Arrow from "../public/arrow.svg";
+import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
+import { useRef } from "react";
+// Add state variable to store the selected userId
+let moon;
+let start_time;
+let entry_fee;
+let firstprize;
+// let players;
 
-const Login7 = () => {
-  const emailRef = useRef();
+const MyRefferal = () => {
+
+  const [referrals, setReferrals] = useState([]); // Initialize as an empty array
   const router = useRouter();
+  const [modalOpen, setModalOpen] = React.useState(false);
+  const firstRef = useRef()
+  const firstRef1 = useRef()
+  const firstRef2 = useRef()
+  // const firstRef3 = useRef()
 
-  const [totalUserCount, setTotalUserCount] = useState(0);
-  const [todayUserCount, setTodayUserCount] = useState(0);
+  async function myReferrals() {
+    try {
+      const token = localStorage.getItem("token");
+      let res = await axios.post("/api/totalUser", { token: token });
+      const response = res.data;
+      console.log(response.data, "to get the data from api");
+      setReferrals(response.data.data); // Update to access data property correctly
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  // model setup
+  async function apiFunction(e) {
+    try {
+      console.log("hit function",e);
+      setModalOpen(!modalOpen)
+      moon = e
+      console.log(moon, "userId");
+
+    } catch (err) {
+      console.log(err, "api error here")
+    }
+  }
+  // handle modle onclick
+  const handleAddChips = async (e) => {
+    try {
+      start_time = firstRef.current.value;
+      entry_fee = firstRef1.current.value;
+      firstprize = firstRef2.current.value;
+      // players = firstRef3.current.value;
+   
+      const data = {
+        id:moon,
+        start_time,entry_fee,firstprize,
+      };
+      console.log(data, "moon hererererererere ");
+      // const token = localStorage.getItem("token");
+      // console.log(token, "fhfhjfh");
+
+      // api call
+      let res = await axios.post("/api/totalUser",data );
+      const response = res.data;
+      console.log(response, "response data");
+
+      // Close the modal
+      setModalOpen(false);
+      console.log("model closed");
+
+      // Refresh the page after showing the toast message
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
-    // Fetch the user counts data when the component mounts
-    fetchData();
+    myReferrals();
   }, []);
 
-  async function fetchData() {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post("api/totalUser", { token });
-      const response = res.data;
-      console.log(response, "response data!!!!!!!");
-      console.log(response.data.data.totalUserCount,"total user from response");
-      setTotalUserCount(response.data.data.totalUserCount);
-      setTodayUserCount(response.data.data.todayUserCount);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function onSubmitHandler(event) {
-    event.preventDefault();
-
-    const email = emailRef.current.value;
-    const data = {
-      email,
-    };
-
-    console.log(data, "data here");
-
-    login(data);
-  }
-
-  async function login(data) {
-    console.log(data, "from send");
-    try {
-      const token = localStorage.getItem("token");
-      const res = await axios.post("api/totalUser", { token, data });
-      const response = res.data;
-      console.log(response, "2 nd");
-
-       notify("User getting Successfully");
-       console.log(response.data.data.totalUserCount,"total user from response");
-      setTotalUserCount(response.data.data.totalUserCount);
-      setTodayUserCount(response.data.data.todayUserCount);
-      // setTimeout(() => {
-      //   router.push("/dashboard"); // Navigate to the next page
-      // }, 1000);
-    } catch (err) {
-      notifyError("Please Check Email or Password");
-      console.log(err);
-    }
-  }
-
-  const notify = (msg) => {
-    toast.success(msg, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
-
-  const notifyError = (msg) => {
-    toast.error(msg, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
-
   return (
+
     <div>
-      <section className="profile-sec pb-0">
+      <Modal toggle={() => setModalOpen(!modalOpen)} isOpen={modalOpen}>
+        <div className="modal-header d-flex justify-content-between align-items-center m-0">
+          <h5 className="modal-title">Change Pack Detail </h5>
+          <button
+            aria-label="Close"
+            className="close"
+            type="button"
+            onClick={() => setModalOpen(!modalOpen)}
+          >
+            <span aria-hidden={true}>×</span>
+          </button>
+        </div>
+        <ModalBody>
+          <input
+            className="textinput mt-3"
+            type="number"
+            name="quantity"
+            placeholder="Start time"
+            required
+            ref={firstRef}
+          />
+          <br></br>
+          <input
+            className="textinput mt-3"
+            type="number"
+            name="quantity"
+            placeholder="Entry fee"
+            required
+            ref={firstRef1}
+          />
+           <br></br>
+          <input
+            className="textinput mt-3"
+            type="number"
+            name="quantity"
+            placeholder="Win amount"
+            required
+            ref={firstRef2}
+          />
+          <br></br>
+          {/* <input
+            className="textinput mt-3"
+            type="number"
+            name="quantity"
+            placeholder="Players"
+            required
+            ref={firstRef3}
+          /> */}
+
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="secondary"
+            type="button"
+            onClick={() => setModalOpen(!modalOpen)}
+          >
+            Close
+          </Button>
+          <Button
+            color="primary"
+            type="button"
+            onClick={handleAddChips} // Call handleAddChips function when the "Save Changes" button is clicked
+          >
+            Save Changes
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      <section className="profile-sec">
         <div className="container">
           <div className="row justify-content-center">
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
-  
-            <form className="input-sec">
-              <div className="line profile-line"></div>
-              <h3 className="heading-text pink-text mt-2">TOTAL USER</h3>
-  
-              <div className="name-sec" style={{ margin: '20px 0' }}>
-                {/* Separate row for "No of total User" */}
-                <div className="row">
-                  <div className="col">
-                    <h6 className="item-text">No of total User:</h6>
-                  </div>
-                  <div className="col">
-                    <p>{totalUserCount}</p>
-                  </div>
-                </div>
-  
-                {/* Separate row for "No of User of Today" */}
-                <div className="row">
-                  <div className="col">
-                    <h6 className="item-text">No of User of Today:</h6>
-                  </div>
-                  <div className="col">
-                    <p>{todayUserCount}</p>
-                  </div>
-                </div>
-  
-                {/* Separate row for "date to sort" */}
-                <div className="row">
-                  <div className="col">
-                    <h6 className="item-text">date to sort:</h6>
-                  </div>
-                  <div className="col">
-                    <input
-                      ref={emailRef}
-                      className="textinput"
-                      type="date"
-                      name="date"
-                      placeholder="select date"
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-  
-              <a
-                href="funds-page.html"
-                className="btn btn-round btn-warning w-100 "
-                style={{ marginTop: "20px", marginBottom: "20px" }}
-                type="button"
-                onClick={onSubmitHandler}
-              >
-                CONTINUE
-              </a>
+            <form className="input-sec" id="ref-code">
+              <h3 className="heading-text pink-text mt-2">
+                <span
+                  className="arrows-icon"
+                  id="left-rfset"
+                  style={{
+                    position: "relative",
+                    left: "-44%",
+                    cursor: "pointer",
+                  }}
+                >
+                  <img src={Arrow.src} onClick={() => router.back()} />
+                </span>
+                Card Pack
+              </h3>
+
+              <table className="table funds-table mt-3" id="funds-color">
+                <thead>
+                  <tr>
+                    <th id="fuds" scope="col">
+                      Id
+                    </th>
+                    <th id="fuds" scope="col">
+                     Email
+                    </th>
+                    <th id="fuds" scope="col">
+                      PaymentMethod
+                    </th>
+                    <th id="fuds" scope="col">
+                       Amount
+                    </th>
+                    <th id="fuds" scope="col">
+                    TransactionId
+                    </th>
+                    {/* <th id="fuds" scope="col">
+                      Update
+                    </th> */}
+
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {referrals.length > 0 ? (
+                    referrals.map((referral, index) => (
+                      <tr key={referral.id}>
+                        <td>{index + 1}</td>
+                        <td>{referral.email} Sec</td>
+                        <td>{referral.paymentMethod}</td>
+                        <td>{referral.totalAmount}</td>
+                        <td> {referral.transactionId } </td>
+                        {/* <td> <Button color="primary" type="button"
+                          onClick={() => apiFunction(referral.id)}>
+                          Update Pack
+                        </Button></td> */}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="4">No referrals found</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </form>
           </div>
         </div>
       </section>
-  
-      <script src="js/bootstrap.bundle.js"></script>
     </div>
+    // model
+
   );
-  
-  
 };
 
-export default Login7;
+export default MyRefferal;
