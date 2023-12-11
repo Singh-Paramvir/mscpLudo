@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       console.log(data, "to be send to api tp");
       var config = {
         method: "post",
-        url: "http://159.89.168.224:3000/api/admin/gameslote",
+        url: "http://16.171.114.188:3000/api/admin/gameslote",
         headers: {
             'Authorization': `Bearer ${token}`
           },

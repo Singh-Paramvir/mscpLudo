@@ -14,7 +14,7 @@ export default async function handler(req, res) {
 
       var config = {
         method: "post",
-        url: "http://159.89.168.224:3000/api/admin/updateslote",
+        url: "http://16.171.114.188:3000/api/admin/updateslote",
         data: filteredData, // Send the filtered data
       };
 

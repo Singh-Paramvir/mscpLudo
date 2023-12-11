@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       console.log(token, "to be send to api tp");
       var config = {
         method: "post",
-        url: "http://159.89.168.224:3000/api/admin/getalluser",
+        url: "http://16.171.114.188:3000/api/admin/getalluser",
         headers: {
           'Authorization': `Bearer ${token}`
         },
