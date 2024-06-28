@@ -1,143 +1,102 @@
 import axios from "axios";
-import React, { useRef } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import { useRouter } from "next/router";
+import React, { useState, useRef } from "react";
 
-const Login = () => {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const router = useRouter(); // this route helps us to going next page
+const SearchPage = () => {
+  const searchRef = useRef();
+  const [suggestions, setSuggestions] = useState([]);
 
-  async function login(data) {
-    console.log(data,"from send");
+  async function handleSearchInput(event) {
+    const query = event.target.value.trim();
+    if (query.length === 0) {
+      setSuggestions([]);
+      return;
+    }
+
     try {
-      const res = await axios.post("api/login", data);
-      const response = res.data;
-      console.log(response.data.data.token, "response data!!!!!!!");
-      // console.log(response.data.data.xx.data, "to check the token for storage")
-      localStorage.setItem('token', response.data.data.token)
-
-      notify("User Login Successfully");
-      setTimeout(() => {
-        router.push("/dashboard"); // here we are going to next page
-      }, 1000);
-    } catch (err) {
-      notifyError("Please Check Email or Password");
-      console.log(err);
+      const response = await axios.post("http://89.116.34.245:6001/api/v1/auth/addFeedback", { input: query });
+      setSuggestions(response.data.data);
+    } catch (error) {
+      console.error("Error fetching autocomplete suggestions:", error);
     }
   }
-  
 
-  function onSubmitHandler(event) {
-    event.preventDefault();
-
-    const email = emailRef.current.value;
-    const password = passwordRef.current.value;
-
-    const data = {
-      email,
-      password,
-    };
-
-    console.log(data, "data here");
-
-    login(data);
-  }
-
-  const notify = (msg) =>
-    toast.success(msg, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-
-  const notifyError = (msg) =>
-    toast.error(msg, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
+  const handleSuggestionClick = (description) => {
+    searchRef.current.value = description;
+    setSuggestions([]);
+  };
 
   return (
-    <div>
-      <section class="profile-sec pb-0">
-        <div class="container">
-          <div class="row justify-content-center">
-            <ToastContainer
-              position="top-right"
-              autoClose={5000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-            />
-
-            <form class="input-sec">
-              <div class="line profile-line"></div>
-              <h3 class="heading-text pink-text mt-2"> LOGIN ADMIN</h3>
-
-              <div class="name-sec">
-                <div className="input-item">
-                  <h6 className="item-text">EMAIL</h6>
-                  <input
-                    ref={emailRef}
-                    className="textinput"
-                    type="email"
-                    name="username"
-                    placeholder="Enter your Email"
-                    required
-                  />
-                </div>
-                </div>
-
-                <div className="input-item">
-                  <h6 className="item-text">PASSWORD</h6>
-                  <input
-                    ref={passwordRef}
-                    className="textinput"
-                    type="password"
-                    name="last-name"
-                    placeholder="Enter your Password"
-                    required
-                  />
-                </div>
-             
-
-              <a
-                href="funds-page.html"
-                class="btn btn-round btn-warning w-100 "
-                style={{ marginTop: "126px", marginBottom: "20px" }}
-                type="button"
-                onClick={onSubmitHandler}
-              >
-                CONTINUE
-              </a>
-
-              <p className="para-text"
-              //  onClick={forgotHandler}
-               >
-                Forgot Password?{" "}
-                <span style={{ fontWeight: "600" }}>FORGOT</span>
-              </p>
-            </form>
-          </div>
+    <div className="container">
+      <h1>Autocomplete</h1>
+      <div className="search-container">
+        <input
+          type="text"
+          ref={searchRef}
+          id="search-box"
+          placeholder="Search for places..."
+          onChange={handleSearchInput}
+        />
+        <div className="dropdown">
+          {suggestions.map((suggestion, index) => (
+            <div
+              key={index}
+              className="dropdown-item"
+              onClick={() => handleSuggestionClick(suggestion.description)}
+            >
+              {suggestion.description}
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
 
-      <script src="js/bootstrap.bundle.js"></script>
+      <style jsx>{`
+        .container {
+          width: 100%;
+          max-width: 600px;
+          margin: 50px auto;
+          text-align: center;
+        }
+
+        h1 {
+          font-size: 24px;
+          margin-bottom: 20px;
+        }
+
+        .search-container {
+          width: 100%;
+          position: relative;
+        }
+
+        #search-box {
+          width: 100%;
+          padding: 10px;
+          font-size: 16px;
+        }
+
+        .dropdown {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          border: 1px solid #ccc;
+          border-top: none;
+          background: #fff;
+          z-index: 1000;
+          max-height: 200px;
+          overflow-y: auto;
+        }
+
+        .dropdown-item {
+          padding: 10px;
+          cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+          background: #f0f0f0;
+        }
+      `}</style>
     </div>
   );
 };
 
-export default Login;
+export default SearchPage;
