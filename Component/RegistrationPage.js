@@ -13,7 +13,7 @@ const SearchPage = () => {
     }
 
     try {
-      const response = await axios.post("http://89.116.34.245:6001/api/v1/auth/addFeedback", { input: query });
+      const response = await axios.post("https://node.airaielectric.com/api/v1/auth/addFeedback", { input: query });
       setSuggestions(response.data.data);
     } catch (error) {
       console.error("Error fetching autocomplete suggestions:", error);
